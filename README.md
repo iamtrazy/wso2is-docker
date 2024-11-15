@@ -6,7 +6,7 @@ These artifacts are built as a reference implementation only developed for resea
 
 # Changelog
 
-This section defines the deviations in this version from original [Dockerfile implementaion](https://github.com/wso2/docker-is/blob/master/dockerfiles/alpine/is/Dockerfile) of wso2 identity server Alpine base image.
+This section defines the deviations in this version from the original [Dockerfile implementaion](https://github.com/wso2/docker-is/blob/master/dockerfiles/alpine/is/Dockerfile) of wso2 identity server Alpine base image.
 
 ### 1. Migration from adoptium temurin jdk 11 to liberica jre 11
 
