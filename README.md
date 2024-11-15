@@ -1,6 +1,6 @@
 #### ⚠️ DISCLAIMER
 
-These artifacts are build as a reference implementation only developed for research and learning purposes and should not be used in production
+These artifacts are built as a reference implementation only developed for research and learning purposes and should not be used in production. You can find a prebuilt docker image of these reference builds for amd64 and arm64 cpu architectures in the [dockerhub]("https://hub.docker.com/r/iamtrazy/wso2is")
 
 ---
 
