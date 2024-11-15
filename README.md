@@ -19,7 +19,7 @@ This also has an open issue [355]("https://github.com/wso2/docker-is/issues/355"
 ### 3. Some other smaller fixes such as,
 - Avoiding legacy backward compatible Alternative syntax of ENV instruction used in the Dockerfile. https://docs.docker.com/reference/dockerfile/#env
 - Avoid setting JAVA_HOME & PATH Environment variables since the base image already correctly sets those variables.
-- Removing k8 membership scheme as mentioned in the [#403]("https://github.com/wso2/docker-is/pull/403)
+- Removing k8 membership scheme as mentioned in the [#403](https://github.com/wso2/docker-is/pull/403)
 - Removing preinstalled packages such as wget, unzip, and netcat-openbsd. I could not find any use case for these packages other than for downloading and extracting the IS server ZIP file.
 
 # Todo
