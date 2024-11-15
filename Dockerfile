@@ -42,38 +42,38 @@ ARG MOTD='printf "\n\
     which is under the Apache License, Version 2.0. \n\
     Read more about Apache License, Version 2.0 here @ http://www.apache.org/licenses/LICENSE-2.0.\n"'
 
-ENV ENV="/home/${USER}/.rc"
+ENV ENV="${USER_HOME}/.ashrc"
 
 # create the non-root user and group and set MOTD login message
 RUN \
     addgroup -S -g ${USER_GROUP_ID} ${USER_GROUP} \
     && adduser -S -u ${USER_ID} -h ${USER_HOME} -G ${USER_GROUP} ${USER} \
-    && echo ${MOTD} > /home/${USER}/.rc \
-    && chown ${USER}:${USER_GROUP} /home/${USER}/.rc
+    && echo ${MOTD} > ${ENV}
 
+# switch to the non-root user and group for rest of the RUN tasks and change the workdir
 USER ${USER_ID}:${USER_GROUP}
+WORKDIR ${USER_HOME}
 # create Java prefs dir
 # this is to avoid warning logs printed by FileSystemPreferences class
 RUN \
-    mkdir -p ${USER_HOME}/.java/.systemPrefs \
-    && mkdir -p ${USER_HOME}/.java/.userPrefs \
-    && chmod -R 755 ${USER_HOME}/.java \
-    && chown -R ${USER}:${USER_GROUP} ${USER_HOME}/.java
+    mkdir -p ~/.java/.systemPrefs \
+    && mkdir -p ~/.java/.userPrefs \
+    && chmod -R 755 ~/.java \
+    && chown -R ${USER}:${USER_GROUP} ~/.java
 
-# copy init script to user home
-COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
 COPY --from=unzipper --chown=${USER}:${USER_GROUP} ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
 
 # add MySQL JDBC connector to server home as a third party library
 ADD --chown=${USER}:${USER_GROUP} https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/dropins/
 
-# Set the user and work directory.
-WORKDIR ${USER_HOME}
-
 # set environment variables
 ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs.userRoot=${USER_HOME}" \
     WORKING_DIRECTORY=${USER_HOME} \
     WSO2_SERVER_HOME=${WSO2_SERVER_HOME}
+
+# copy init script to user home
+COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
+RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
 
 # expose ports
 EXPOSE 4000 9763 9443
