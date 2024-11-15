@@ -94,7 +94,7 @@ chmod o+r <SOURCE_CONFIGS>/deployment.toml
 docker run \
 -p 9444:9444 \
 --volume <SOURCE_CONFIGS>/deployment.toml:<TARGET_CONFIGS>/deployment.toml \
-wso2is:7.0.0-alpine
+iamtrazy\wso2is:7.0.0
 ```
 
 > In here, <TARGET_CONFIGS> refers to /home/wso2carbon/wso2is-7.0.0/repository/conf folder of the container.
