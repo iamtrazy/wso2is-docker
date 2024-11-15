@@ -6,6 +6,27 @@ These artifacts are build as a reference implementation only developed for resea
 
 # Changelog
 
+This section defines the deviations in this version from original [Dockerfile implementaion](https://github.com/wso2/docker-is/blob/master/dockerfiles/alpine/is/Dockerfile) of wso2 identity server Alpine base image.
+
+### 1. Migration from adoptium temurin jdk 11 to liberica jre 11
+
+This change is done to mainly achieve the smaller docker image size. Compared to the the way that is done in the original implementation which is to download binary release of jdk from adoptium github release, This version utilizes the already available [liberica-runtime-containe](https://hub.docker.com/r/bellsoft/liberica-runtime-container). I found a open issue [#332](https://github.com/wso2/docker-is/issues/333) and a PR [#332](https://github.com/wso2/docker-is/pull/332) that maybe addressing some regressions due to doing this but coudn't find any evidences or reasons why this change was done.
+
+### 2. Fix for a error warning massage that appears due to not using Location to store java preferences
+
+This also has an open issue [355]("https://github.com/wso2/docker-is/issues/355") and a following [PR]("https://github.com/wso2/docker-is/pull/357") which seems to fix the issue but not yet merged. I implemented the same fix here to avoid warning log massages.
+
+### 3. Some other smaller fixes such as,
+- Avoiding legacy backward compatible Alternative syntax of ENV instruction used in the Dockerfile. https://docs.docker.com/reference/dockerfile/#env
+- Avoiding setting JAVA_HOME & PATH Environment variables since base image already correctly setting those variables.
+- Removing k8 membership scheme as mentioned in the [#403]("https://github.com/wso2/docker-is/pull/403)
+- Removing preinstalled packages such as wget, unzip , netcat-openbsd. Couldnt find any usecase of these packages other than for downloading and extracting the IS server ZIP file.
+
+# Todo
+
+- [ ] Test whether use of liberica runtime image cause any regressions.
+- [ ] Provide a seperate image with JDK and other OS base images provided by liberica
+
 # Dockerfile for WSO2 Identity Server
 
 This section defines the step-by-step instructions to build an [liberica-runtime-container](https://hub.docker.com/r/bellsoft/liberica-runtime-container) based Docker image for WSO2 Identity Server `7.0.0`.
