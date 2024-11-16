@@ -14,7 +14,7 @@ This change is done mainly to achieve a smaller Docker image size. Compared to t
 
 ### 2. Fix for a error warning massage that appears due to not using Location to store java preferences
 
-This also has an open issue [355]("https://github.com/wso2/docker-is/issues/355") and a following [357]("https://github.com/wso2/docker-is/pull/357") which seems to fix the problem but not yet merged. I implemented the same fix here to avoid warning log messages.
+This also has an open issue [#355](https://github.com/wso2/docker-is/issues/355) and a following [#357](https://github.com/wso2/docker-is/pull/357) which seems to fix the problem but not yet merged. I implemented the same fix here to avoid warning log messages.
 
 ### 3. Some other smaller fixes such as,
 - Avoiding legacy backward compatible Alternative syntax of ENV instruction used in the Dockerfile. https://docs.docker.com/reference/dockerfile/#env
