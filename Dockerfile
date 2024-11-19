@@ -60,9 +60,11 @@ COPY --from=unzipper --chown=choreouser:choreo ${WSO2_SERVER} /home/choreouser/$
 ADD --chown=choreouser:choreo https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/dropins/
 
 # set environment variables
-ENV JAVA_OPTS="-Xms128m -Xmx128m -Djava.util.prefs.systemRoot=/home/choreouser/.java -Djava.util.prefs.userRoot=/home/choreouser" \
+ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=/home/choreouser/.java -Djava.util.prefs.userRoot=/home/choreouser" \
     WORKING_DIRECTORY=/home/choreouser \
     WSO2_SERVER_HOME=${WSO2_SERVER_HOME}
+
+ENV JVM_MEM_OPTS="-Xms128m -Xmx128m"
 
 # copy init script to user home
 COPY --chown=choreouser:choreo docker-entrypoint.sh /home/choreouser/
