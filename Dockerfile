@@ -51,7 +51,7 @@ RUN \
     && echo ${MOTD} > ${ENV}
 
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
-USER ${USER_ID}:${USER_GROUP}
+USER 10001:wso2
 WORKDIR ${USER_HOME}
 # create Java prefs dir
 # this is to avoid warning logs printed by FileSystemPreferences class
