@@ -44,7 +44,7 @@ RUN \
     && echo ${MOTD} > ${ENV}
 
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
-USER 10014:choreo
+USER 10014
 WORKDIR /home/choreouser
 # create Java prefs dir
 # this is to avoid warning logs printed by FileSystemPreferences class
