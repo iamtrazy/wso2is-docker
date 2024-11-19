@@ -4,4 +4,4 @@ endpoints:
   - name: wso2-endpoint
     service:
       port: 9443
-    type: REST
+    type: TCP
