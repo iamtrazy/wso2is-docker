@@ -18,19 +18,12 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 ENV JAVA_VERSION=jre-11.0.25
 
-# set Docker image build arguments
-# build arguments for user/group configurations
-ARG USER=wso2carbon
-ARG USER_ID=10001
-ARG USER_GROUP=wso2
-ARG USER_GROUP_ID=10001
-ARG USER_HOME=/home/${USER}
 # build arguments for WSO2 product installation
 ARG WSO2_SERVER_NAME=wso2is
 ARG WSO2_SERVER_VERSION=7.0.0
 ARG WSO2_SERVER_REPOSITORY=product-is
 ARG WSO2_SERVER=${WSO2_SERVER_NAME}-${WSO2_SERVER_VERSION}
-ARG WSO2_SERVER_HOME=${USER_HOME}/${WSO2_SERVER}
+ARG WSO2_SERVER_HOME=/home/choreouser/${WSO2_SERVER}
 # build arguments for external artifacts
 ARG DNS_JAVA_VERSION=2.1.8
 ARG MYSQL_CONNECTOR_VERSION=8.0.29
@@ -42,41 +35,41 @@ ARG MOTD='printf "\n\
     which is under the Apache License, Version 2.0. \n\
     Read more about Apache License, Version 2.0 here @ http://www.apache.org/licenses/LICENSE-2.0.\n"'
 
-ENV ENV="${USER_HOME}/.ashrc"
+ENV ENV="/home/choreouser/.ashrc"
 
 # create the non-root user and group and set MOTD login message
 RUN \
-    addgroup -S -g ${USER_GROUP_ID} ${USER_GROUP} \
-    && adduser -S -u ${USER_ID} -h ${USER_HOME} -G ${USER_GROUP} ${USER} \
+    addgroup -S -g 10014 choreo \
+    && adduser -S -u 10014 -h /home/choreouser -G choreo choreouser \
     && echo ${MOTD} > ${ENV}
 
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
-USER 100014
-WORKDIR ${USER_HOME}
+USER 10014
+WORKDIR /home/choreouser
 # create Java prefs dir
 # this is to avoid warning logs printed by FileSystemPreferences class
 RUN \
     mkdir -p ~/.java/.systemPrefs \
     && mkdir -p ~/.java/.userPrefs \
     && chmod -R 755 ~/.java \
-    && chown -R ${USER}:${USER_GROUP} ~/.java
+    && chown -R choreouser:choreo ~/.java
 
-COPY --from=unzipper --chown=${USER}:${USER_GROUP} ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
+COPY --from=unzipper --chown=choreouser:choreo ${WSO2_SERVER} /home/choreouser/${WSO2_SERVER}
 
 # add MySQL JDBC connector to server home as a third party library
-ADD --chown=${USER}:${USER_GROUP} https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/dropins/
+ADD --chown=choreouser:choreo https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/dropins/
 
 # set environment variables
-ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs.userRoot=${USER_HOME}" \
-    WORKING_DIRECTORY=${USER_HOME} \
+ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=/home/choreouser/.java -Djava.util.prefs.userRoot=/home/choreouser" \
+    WORKING_DIRECTORY=/home/choreouser \
     WSO2_SERVER_HOME=${WSO2_SERVER_HOME}
 
 # copy init script to user home
-COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
-RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
+COPY --chown=choreouser:choreo docker-entrypoint.sh /home/choreouser/
+RUN chmod 755 /home/choreouser/docker-entrypoint.sh
 
 # expose ports
 EXPOSE 4000 9763 9443
 
 # initiate container and start WSO2 Carbon server
-ENTRYPOINT ["/home/wso2carbon/docker-entrypoint.sh"]
+ENTRYPOINT ["/home/choreouser/docker-entrypoint.sh"]
