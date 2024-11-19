@@ -18,7 +18,7 @@ test -d ${config_volume} && [ "$(ls -A ${config_volume})" ] && cp -RL ${config_v
 test -d ${artifact_volume} && [ "$(ls -A ${artifact_volume})" ] && cp -RL ${artifact_volume}/* ${WSO2_SERVER_HOME}/
 
 
-mv ${WSO2_SERVER_HOME} /tmp/
+cp -r ${WSO2_SERVER_HOME} /tmp/
 export WSO2_SERVER_HOME=/tmp/wso2is-7.0.0
 
 # start WSO2 Carbon server
