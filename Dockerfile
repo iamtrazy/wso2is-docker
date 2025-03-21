@@ -33,7 +33,7 @@ ARG WSO2_SERVER=${WSO2_SERVER_NAME}-${WSO2_SERVER_VERSION}
 ARG WSO2_SERVER_HOME=${USER_HOME}/${WSO2_SERVER}
 # build arguments for external artifacts
 ARG DNS_JAVA_VERSION=3.6.1
-ARG MYSQL_CONNECTOR_VERSION=8.0.29
+ARG MYSQL_CONNECTOR_VERSION=8.0.30
 # build argument for MOTD
 ARG MOTD='printf "\n\
     Welcome to WSO2 Docker Resources \n\
