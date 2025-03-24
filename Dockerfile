@@ -50,6 +50,14 @@ RUN \
     && adduser -S -u ${USER_ID} -h ${USER_HOME} -G ${USER_GROUP} ${USER} \
     && echo ${MOTD} > ${ENV}
 
+# Install required packages.
+RUN \
+    apk update \
+    && apk add --no-cache netcat-openbsd \
+    && apk add unzip \
+    && apk add wget \
+    && apk add curl
+
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
 USER ${USER_ID}:${USER_GROUP}
 WORKDIR ${USER_HOME}
@@ -75,12 +83,6 @@ ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs
 COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
 RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
 
-# Install required packages.
-RUN \
-    apk update \
-    && apk add --no-cache netcat-openbsd \
-    && apk add unzip \
-    && apk add wget
 
 # expose ports
 EXPOSE 4000 9763 9443
