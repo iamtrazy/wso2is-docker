@@ -12,7 +12,7 @@ RUN apk add --no-cache unzip wget && \
     unzip ${WSO2_SERVER}.zip
 
 # set base Docker image to Liberica JRE 11 runtime
-FROM eclipse-temuridk21.0.6_7-jdk
+FROM eclipse-temurin:21.0.6_7-jdk-alpine
 LABEL maintainer="iamtrazy <iamtrazy@proton.me>"
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' 
 
@@ -74,6 +74,13 @@ ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs
 # copy init script to user home
 COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
 RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
+
+# Install required packages.
+RUN \
+    apk update \
+    && apk add --no-cache netcat-openbsd \
+    && apk add unzip \
+    && apk add wget
 
 # expose ports
 EXPOSE 4000 9763 9443
