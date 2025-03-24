@@ -20,7 +20,7 @@ ENV JAVA_VERSION=jre-21.0.6
 
 # set Docker image build arguments
 # build arguments for user/group configurations
-ARG USER=wso2carbon
+ARG USER=wso2
 ARG USER_ID=802
 ARG USER_GROUP=wso2
 ARG USER_GROUP_ID=802
@@ -33,7 +33,7 @@ ARG WSO2_SERVER=${WSO2_SERVER_NAME}-${WSO2_SERVER_VERSION}
 ARG WSO2_SERVER_HOME=${USER_HOME}/${WSO2_SERVER}
 # build arguments for external artifacts
 ARG DNS_JAVA_VERSION=3.6.1
-ARG MYSQL_CONNECTOR_VERSION=8.0.30
+ARG MSSQL_CONNECTOR_VERSION=12.10.0.jre11
 # build argument for MOTD
 ARG MOTD='printf "\n\
     Welcome to WSO2 Docker Resources \n\
@@ -64,7 +64,7 @@ RUN \
 COPY --from=unzipper --chown=${USER}:${USER_GROUP} ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
 
 # add MySQL JDBC connector to server home as a third party library
-ADD --chown=${USER}:${USER_GROUP} https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
+ADD --chown=${USER}:${USER_GROUP} https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/${MSSQL_CONNECTOR_VERSION}/mssql-jdbc-${MSSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
 
 # set environment variables
 ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs.userRoot=${USER_HOME}" \
@@ -79,4 +79,4 @@ RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
 EXPOSE 4000 9763 9443
 
 # initiate container and start WSO2 Carbon server
-ENTRYPOINT ["/home/wso2carbon/docker-entrypoint.sh"]
+ENTRYPOINT ["/home/wso2/docker-entrypoint.sh"]
