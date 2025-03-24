@@ -12,11 +12,11 @@ RUN apk add --no-cache unzip wget && \
     unzip ${WSO2_SERVER}.zip
 
 # set base Docker image to Liberica JRE 11 runtime
-FROM bellsoft/liberica-runtime-container:jre-21.0.6-musl
+FROM eclipse-temuridk21.0.6_7-jdk
 LABEL maintainer="iamtrazy <iamtrazy@proton.me>"
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' 
 
-ENV JAVA_VERSION=jre-21.0.6
+ENV JAVA_VERSION=jdk-21.0.6+7
 
 # set Docker image build arguments
 # build arguments for user/group configurations
