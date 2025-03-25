@@ -11,12 +11,12 @@ RUN apk add --no-cache unzip wget && \
     wget -O ${WSO2_SERVER}.zip "${WSO2_SERVER_DIST_URL}" && \
     unzip ${WSO2_SERVER}.zip
 
-# set base Docker image to Liberica JRE 11 runtime
-FROM eclipse-temurin:21.0.6_7-jdk-alpine
+# set base Docker image to Liberica JRE 21 runtime
+FROM bellsoft/liberica-runtime-container:jre-21.0.6-musl
 LABEL maintainer="iamtrazy <iamtrazy@proton.me>"
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' 
 
-ENV JAVA_VERSION=jdk-21.0.6+7
+ENV JAVA_VERSION=jre-21.0.6
 
 # set Docker image build arguments
 # build arguments for user/group configurations
@@ -44,19 +44,14 @@ ARG MOTD='printf "\n\
 
 ENV ENV="${USER_HOME}/.ashrc"
 
+# Install required packages.
+RUN apk add --no-cache netcat-openbsd
+
 # create the non-root user and group and set MOTD login message
 RUN \
     addgroup -S -g ${USER_GROUP_ID} ${USER_GROUP} \
     && adduser -S -u ${USER_ID} -h ${USER_HOME} -G ${USER_GROUP} ${USER} \
     && echo ${MOTD} > ${ENV}
-
-# Install required packages.
-RUN \
-    apk update \
-    && apk add --no-cache netcat-openbsd \
-    && apk add unzip \
-    && apk add wget \
-    && apk add curl
 
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
 USER ${USER_ID}:${USER_GROUP}
@@ -82,7 +77,6 @@ ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs
 # copy init script to user home
 COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
 RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
-
 
 # expose ports
 EXPOSE 4000 9763 9443
