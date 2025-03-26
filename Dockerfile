@@ -11,12 +11,12 @@ RUN apk add --no-cache unzip wget && \
     wget -O ${WSO2_SERVER}.zip "${WSO2_SERVER_DIST_URL}" && \
     unzip ${WSO2_SERVER}.zip
 
-# set base Docker image to Liberica JRE 21 runtime
-FROM bellsoft/liberica-runtime-container:jre-21.0.6-musl
+# set base image to eclipse-temurin JDK 21.0.6_7
+FROM eclipse-temurin:21.0.6_7-jdk-jammy
 LABEL maintainer="iamtrazy <iamtrazy@proton.me>"
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' 
 
-ENV JAVA_VERSION=jre-21.0.6
+ENV JAVA_VERSION=jdk-21.0.6_7
 
 # set Docker image build arguments
 # build arguments for user/group configurations
@@ -42,16 +42,18 @@ ARG MOTD='printf "\n\
     which is under the Apache License, Version 2.0. \n\
     Read more about Apache License, Version 2.0 here @ http://www.apache.org/licenses/LICENSE-2.0.\n"'
 
-ENV ENV="${USER_HOME}/.ashrc"
-
-# Install required packages.
-RUN apk add --no-cache netcat-openbsd
+# install required packages
+RUN \
+    apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        netcat \
+    && rm -rf /var/lib/apt/lists/*
 
 # create the non-root user and group and set MOTD login message
 RUN \
-    addgroup -S -g ${USER_GROUP_ID} ${USER_GROUP} \
-    && adduser -S -u ${USER_ID} -h ${USER_HOME} -G ${USER_GROUP} ${USER} \
-    && echo ${MOTD} > ${ENV}
+    groupadd --system -g ${USER_GROUP_ID} ${USER_GROUP} \
+    && useradd --system --create-home --home-dir ${USER_HOME} --no-log-init -g ${USER_GROUP_ID} -u ${USER_ID} ${USER} \
+    && echo '[ ! -z "${TERM}" -a -r /etc/motd ] && cat /etc/motd' >> /etc/bash.bashrc; echo "${MOTD}" > /etc/motd
 
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
 USER ${USER_ID}:${USER_GROUP}
