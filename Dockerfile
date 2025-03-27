@@ -46,7 +46,7 @@ ARG MOTD='printf "\n\
 RUN \
     apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        netcat \
+    netcat \
     && rm -rf /var/lib/apt/lists/*
 
 # create the non-root user and group and set MOTD login message
