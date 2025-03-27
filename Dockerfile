@@ -21,9 +21,9 @@ ENV JAVA_VERSION=jdk-21.0.6_7
 # set Docker image build arguments
 # build arguments for user/group configurations
 ARG USER=wso2
-ARG USER_ID=802
+ARG USER_ID=10001
 ARG USER_GROUP=wso2
-ARG USER_GROUP_ID=802
+ARG USER_GROUP_ID=10001
 ARG USER_HOME=/home/${USER}
 # build arguments for WSO2 product installation
 ARG WSO2_SERVER_NAME=wso2is
