@@ -20,10 +20,10 @@ ENV JAVA_VERSION=jre-21.0.6
 
 # set Docker image build arguments
 # build arguments for user/group configurations
-ARG USER=wso2carbon
-ARG USER_ID=802
+ARG USER=wso2
+ARG USER_ID=10001
 ARG USER_GROUP=wso2
-ARG USER_GROUP_ID=802
+ARG USER_GROUP_ID=10001
 ARG USER_HOME=/home/${USER}
 # build arguments for WSO2 product installation
 ARG WSO2_SERVER_NAME=wso2is
@@ -82,4 +82,4 @@ RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
 EXPOSE 4000 9763 9443
 
 # initiate container and start WSO2 Carbon server
-ENTRYPOINT ["/home/wso2carbon/docker-entrypoint.sh"]
+ENTRYPOINT ["/home/wso2/docker-entrypoint.sh"]
