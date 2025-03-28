@@ -11,7 +11,7 @@ RUN apk add --no-cache unzip wget && \
     wget -O ${WSO2_SERVER}.zip "${WSO2_SERVER_DIST_URL}" && \
     unzip ${WSO2_SERVER}.zip
 
-# set base Docker image to Liberica JRE 11 runtime
+# set base Docker image to Liberica JRE 21 runtime
 FROM bellsoft/liberica-runtime-container:jre-21.0.6-musl
 LABEL maintainer="iamtrazy <iamtrazy@proton.me>"
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8' 
@@ -43,6 +43,9 @@ ARG MOTD='printf "\n\
     Read more about Apache License, Version 2.0 here @ http://www.apache.org/licenses/LICENSE-2.0.\n"'
 
 ENV ENV="${USER_HOME}/.ashrc"
+
+# Install required packages.
+RUN apk add --no-cache netcat-openbsd
 
 # create the non-root user and group and set MOTD login message
 RUN \
