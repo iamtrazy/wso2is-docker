@@ -35,12 +35,12 @@ ARG WSO2_SERVER_HOME=${USER_HOME}/${WSO2_SERVER}
 ARG DNS_JAVA_VERSION=3.6.1
 ARG MSSQL_CONNECTOR_VERSION=12.10.0.jre11
 # build argument for MOTD
-ARG MOTD='printf "\n\
+ARG MOTD="\n\
     Welcome to WSO2 Docker Resources \n\
     --------------------------------- \n\
     This Docker container comprises of a WSO2 product, running with its latest GA release \n\
     which is under the Apache License, Version 2.0. \n\
-    Read more about Apache License, Version 2.0 here @ http://www.apache.org/licenses/LICENSE-2.0.\n"'
+    Read more about Apache License, Version 2.0 here @ http://www.apache.org/licenses/LICENSE-2.0.\n"
 
 # install required packages
 RUN \
@@ -70,6 +70,10 @@ COPY --from=unzipper --chown=${USER}:${USER_GROUP} ${WSO2_SERVER} ${USER_HOME}/$
 
 # add MySQL JDBC connector to server home as a third party library
 ADD --chown=${USER}:${USER_GROUP} https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/${MSSQL_CONNECTOR_VERSION}/mssql-jdbc-${MSSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
+
+# add dropin connectors
+
+ADD --chown=${USER}:${USER_GROUP} https://github.com/wso2-extensions/identity-fraud-detection-sift/releases/download/v1.0.2/org.wso2.carbon.identity.fraud.detection.sift-1.0.2.jar ${WSO2_SERVER_HOME}/repository/components/dropins/
 
 # set environment variables
 ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs.userRoot=${USER_HOME}" \
