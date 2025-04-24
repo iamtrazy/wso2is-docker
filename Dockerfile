@@ -51,10 +51,11 @@ RUN \
     adduser -S -u ${USER_ID} -h ${USER_HOME} --ingroup root ${USER} \
     && echo ${MOTD} > ${ENV}
 
-COPY --from=unzipper --chown=${USER}:${GROUP_ID} ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
-ADD --chown=${USER}:${GROUP_ID} https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
-
-RUN chmod -R g+rwX ${WSO2_SERVER_HOME}
+RUN mkdir ${WSO2_SERVER_HOME} \
+    && chown -R ${USER}:${GROUP_ID} ${WSO2_SERVER_HOME} \
+    && chmod -R g=u ${WSO2_SERVER_HOME}
+COPY --from=unzipper --chown=${USER}:${GROUP_ID} --chmod=g=u ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
+ADD --chown=${USER}:${GROUP_ID} --chmod=g=u https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
 
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
 USER ${USER_ID}
