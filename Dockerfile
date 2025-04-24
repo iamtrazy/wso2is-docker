@@ -20,10 +20,9 @@ ENV JAVA_VERSION=jre-21.0.6
 
 # set Docker image build arguments
 # build arguments for user/group configurations
-ARG USER=wso2
+ARG USER=wso2carbon
 ARG USER_ID=10001
-ARG USER_GROUP=wso2
-ARG USER_GROUP_ID=10001
+ARG GROUP_ID=0
 ARG USER_HOME=/home/${USER}
 # build arguments for WSO2 product installation
 ARG WSO2_SERVER_NAME=wso2is
@@ -49,12 +48,16 @@ RUN apk add --no-cache netcat-openbsd
 
 # create the non-root user and group and set MOTD login message
 RUN \
-    addgroup -S -g ${USER_GROUP_ID} ${USER_GROUP} \
-    && adduser -S -u ${USER_ID} -h ${USER_HOME} -G ${USER_GROUP} ${USER} \
+    adduser -S -u ${USER_ID} -h ${USER_HOME} --ingroup root ${USER} \
     && echo ${MOTD} > ${ENV}
 
+COPY --from=unzipper --chown=${USER}:${GROUP_ID} ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
+ADD --chown=${USER}:${GROUP_ID} https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
+
+RUN chmod -R g+rwX ${WSO2_SERVER_HOME}
+
 # switch to the non-root user and group for rest of the RUN tasks and change the workdir
-USER ${USER_ID}:${USER_GROUP}
+USER ${USER_ID}
 WORKDIR ${USER_HOME}
 # create Java prefs dir
 # this is to avoid warning logs printed by FileSystemPreferences class
@@ -62,12 +65,7 @@ RUN \
     mkdir -p ~/.java/.systemPrefs \
     && mkdir -p ~/.java/.userPrefs \
     && chmod -R 755 ~/.java \
-    && chown -R ${USER}:${USER_GROUP} ~/.java
-
-COPY --from=unzipper --chown=${USER}:${USER_GROUP} ${WSO2_SERVER} ${USER_HOME}/${WSO2_SERVER}
-
-# add MySQL JDBC connector to server home as a third party library
-ADD --chown=${USER}:${USER_GROUP} https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CONNECTOR_VERSION}/mysql-connector-java-${MYSQL_CONNECTOR_VERSION}.jar ${WSO2_SERVER_HOME}/repository/components/lib/
+    && chown -R ${USER}:${GROUP_ID} ~/.java
 
 # set environment variables
 ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs.userRoot=${USER_HOME}" \
@@ -75,11 +73,11 @@ ENV JAVA_OPTS="-Djava.util.prefs.systemRoot=${USER_HOME}/.java -Djava.util.prefs
     WSO2_SERVER_HOME=${WSO2_SERVER_HOME}
 
 # copy init script to user home
-COPY --chown=${USER}:${USER_GROUP} docker-entrypoint.sh ${USER_HOME}/
+COPY --chown=${USER}:${GROUP_ID} docker-entrypoint.sh ${USER_HOME}/
 RUN chmod 755 ${USER_HOME}/docker-entrypoint.sh
 
 # expose ports
 EXPOSE 4000 9763 9443
 
 # initiate container and start WSO2 Carbon server
-ENTRYPOINT ["/home/wso2/docker-entrypoint.sh"]
+ENTRYPOINT ["/home/wso2carbon/docker-entrypoint.sh"]
